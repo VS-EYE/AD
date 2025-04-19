@@ -52,10 +52,6 @@ validation_datage = ImageDataGenerator(
     rescale=1. / 255
   
 )
-
-
-
-
 trgen = ImageDataGenerator(rescale=1. / 255)
 
 
@@ -65,22 +61,14 @@ test_datagen = ImageDataGenerator(rescale=1. / 255)
 
 train_gen = trgen.flow_from_directory(
     TrainDS_Path,
-    #classes=['Glioma tumor', 'Meningioma tumor','Pituitary tumor'],
-    #classes=['Non Diabetic', 'Diabetic TYPE1','Diabetic TYPE2'],
-    #classes=['Benign','Malignant'],
-    #classes=['Chickenpox', 'Cowpox','Healthy', 'HFMD','Measles','Monkeypox'],
-    #classes = ['no','yes'],
-    #classes = ['Colorectal cancer','Esophagitis','Pylorus'],
-    #classes = ['autistic','non_autistic'],
-    classes = ['Normal','Tumor'],
-    #classes = ['Cyst','Normal','Stone','Tumor'],
+    classes = ['autistic','non_autistic'],
     target_size=(Width_Imgs, Heigth_Imgs),
     batch_size=BATCH_SIZE,
     shuffle=True )
 
 valid_gen = validation_datagen.flow_from_directory(
     ValidDS_Path,
-    classes = ['Normal','Tumor'],
+    classes = ['autistic','non_autistic'],
     target_size=(Width_Imgs, Heigth_Imgs),
     batch_size=BATCH_SIZE,
     shuffle=True )
@@ -88,7 +76,7 @@ valid_gen = validation_datagen.flow_from_directory(
 
 test_gen = test_datagen.flow_from_directory(
     TestDS_Path,
-    classes = ['Normal','Tumor'],
+    classes = ['autistic','non_autistic'],
     target_size=(Width_Imgs, Heigth_Imgs),
     batch_size=BATCH_SIZE,
     shuffle=False )
@@ -96,7 +84,7 @@ test_gen = test_datagen.flow_from_directory(
 
 
 # ModelCheckpoint callback - save best weights
-tl_checkpoint_1 = ModelCheckpoint(filepath= '/root/public/tf211/PDST/FUSEDV19D169-F22.h5',
+tl_checkpoint_1 = ModelCheckpoint(filepath= '/root/public/tf211/PDST/AD.h5',
                                   save_best_only=True,
                                   monitor = "val_accuracy",
                                   verbose=1)
@@ -155,7 +143,7 @@ def inception_module(x, filters):
     return inception_output
 
 def builder_a(model_input):
-    builder_a = VGG19(weights='imagenet',
+    builder_a = Densnet121(weights='imagenet',
                                     include_top=False,
                                     input_tensor = model_input)
 
@@ -185,7 +173,7 @@ print("successfully built!")
 
 
 def builder_b(model_input):
-    builder_b = ResNet50(weights='imagenet',
+    builder_b = ResNet152V2(weights='imagenet',
                                     include_top=False,
                                     input_tensor = model_input)
 
@@ -228,26 +216,17 @@ print(" successfully built!")
 def fusion_builder(models, model_input):
     outputs = [m.output for m in models]
     y = Concatenate(name='InitialFusionLayer')(outputs)
-
-  
-
-    
-    
+   
     #input_ = tf.expand_dims(y,axis = 1)
-
     #x = ConvLSTM2D(filters=64, kernel_size=(1,1),padding = "same")(input_)
     #x = BatchNormalization()(x)
     #x = Activation('relu')(x)
     #x = Dropout(0.2)(x)
 
-    #x = inception_module(x, filters=16)
+    x = CA_module(x, filters=16)
 
     #x = GlobalAveragePooling2D()(x)
 
- 
-    
-    
-    
     x = Flatten()(y)
     x = Dense(64)(x)
     x = BatchNormalization()(x)
@@ -293,9 +272,3 @@ print(classification_report(test_gen.classes, prediction))
 from sklearn.metrics import confusion_matrix
 print(confusion_matrix(test_gen.classes, prediction))
 print("Cohen", cohen_kappa_score(test_gen.classes, prediction))
-
-
-
-
-
-
