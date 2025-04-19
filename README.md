@@ -1,1 +1,132 @@
 # AD
+# This Project associated with The Visual Computer Jounral Please add the DOI when utlizing it.  
+
+Description
+This repository contains an image classification model for detecting and classifying tumor images using a hybrid deep learning architecture. The model integrates pre-trained models (DenseNet121, and ResNet152V2) with custom fusion layers and image fusion preprocessing techniques, including data augmentation.
+
+The pipeline includes:
+
+Data Preprocessing:
+
+Image data is preprocessed using ImageDataGenerator for training, validation, and testing datasets.
+
+Data augmentation includes horizontal and vertical flips, along with rescaling.
+
+Model Architecture:
+
+The model utilizes pre-trained VGG19 and ResNet50 models for feature extraction, followed by an inception module for feature fusion.
+
+The output of both models is concatenated and passed through dense layers for final prediction.
+
+A custom fusion approach is designed to combine outputs from the two models and improve prediction performance.
+
+Training and Evaluation:
+
+The model is trained using a categorical cross-entropy loss function, with categorical_accuracy, precision, recall, and AUC as evaluation metrics.
+
+Early stopping and learning rate reduction callbacks are used for better performance.
+
+Evaluation Metrics:
+
+F1-Score, Precision, Recall, Accuracy, and Confusion Matrix are computed for model evaluation on the test dataset.
+
+Requirements
+To run the code, ensure you have the following Python libraries installed:
+
+TensorFlow
+Keras
+NumPy
+Pandas
+Matplotlib
+scikit-learn
+keras-flops
+You can install them using:
+
+bash
+Copy
+pip install tensorflow keras numpy pandas matplotlib scikit-learn keras-flops
+Directory Structure
+bash
+Copy
+/Root
+├── /DS
+│   ├── /Train
+│   ├── /Validate
+│   └── /Test
+└── /Models
+    └── FUSEDST-F22.h5
+/DS/Train: Folder containing training images.
+
+/DS/Validate: Folder containing validation images.
+
+/DS/Test: Folder containing testing images.
+
+/Models: Folder where the trained model (FUSEDST.h5) is saved.
+
+Usage
+Prepare the Data:
+
+Place the training, validation, and test image datasets into the appropriate directories: /Train, /Validate, and /Test.
+
+Model Training:
+
+The model is trained using the following code:
+
+Train_history = fused.fit(
+    train_gen,
+    batch_size=BATCH_SIZE,
+    epochs=n_epochs,
+    validation_data=valid_gen,
+    callbacks=[tl_checkpoint_1, reducelr],
+    verbose=1
+)
+Model Evaluation:
+
+After training, the model is evaluated on the test dataset using the following code:
+
+prediction = np.argmax(model.predict(test_gen), axis=1)
+print('Test Data accuracy: ', accuracy_score(test_gen.classes, prediction)*100)
+Metrics Calculation:
+
+The following metrics are printed for evaluation:
+
+print("F1-Score", f1_score(test_gen.classes, prediction, average='macro'))
+print("Recall", recall_score(test_gen.classes, prediction, average='macro'))
+print("Precision", precision_score(test_gen.classes, prediction, average='macro'))
+print(classification_report(test_gen.classes, prediction))
+print(confusion_matrix(test_gen.classes, prediction))
+print("Cohen", cohen_kappa_score(test_gen.classes, prediction))
+Key Points
+Model Architecture:
+
+The model architecture leverages transfer learning with VGG19 and ResNet50 as feature extractors.
+
+A custom fusion approach integrates outputs from both models.
+
+The fusion layer uses concatenation followed by a dense layer to generate final predictions.
+
+Image Augmentation:
+
+Training data is augmented with horizontal and vertical flips.
+
+This helps the model generalize better on unseen data.
+
+Callbacks:
+
+ModelCheckpoint: Saves the best model based on validation accuracy.
+
+ReduceLROnPlateau: Reduces the learning rate if validation loss plateaus.
+
+Future Improvements
+Fine-tuning the Pre-trained Models:
+
+The pre-trained models are frozen in this version. Fine-tuning these models could further improve the performance.
+
+Data Augmentation:
+
+More advanced augmentation techniques like rotation, zoom, and shift could be added to improve the robustness of the model.
+
+License
+This project is licensed under the github License - see the LICENSE file for details.
+
+Private-DS & Models:https://drive.google.com/drive/folders/154oCUEeFsDdZeN_U3zd1oJxxxBXbgO6T?usp=sharing
