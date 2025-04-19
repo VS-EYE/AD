@@ -11,7 +11,7 @@ import cv2
 
 # Load a medical image from local drive
 # Replace 'path_to_your_image.jpg' with the actual path to your image file
-image_path = r"D:\HU\Kaggle\Training\glioma\Tr-gl_0099.jpg"  # Update this path
+image_path = r"D:\HU\Kaggle\Training\Tr-gl_0099.jpg"  # Update this path
 image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)  # Load as grayscale
 
 # Check if the image was loaded successfully
@@ -72,15 +72,7 @@ plt.imshow(reconstructed_image, cmap='gray')
 plt.axis('off')
 plt.show()
 
-
-# In[6]:
-
-
 pip install matplotlib -i https://pypi.tuna.tsinghua.edu.cn/simple
-
-
-# In[79]:
-
 
 import os
 import numpy as np
@@ -146,10 +138,6 @@ for filename in os.listdir(folder_path):
         process_image(image_path, output_path)
 
 print("All images have been processed and saved.")
-
-
-# In[3]:
-
 
 import pywt
 import cv2
@@ -218,10 +206,6 @@ plt.show()
 
 # Save the fused image
 plt.imsave(r"C:\Users\DS\Desktop\fused.png", fusedImage)
-
-
-# In[4]:
-
 
 import pywt
 import cv2
@@ -313,7 +297,7 @@ def fuseCoeff(cooef1, cooef2, method):
         return []
 
 # Parameters
-FUSION_METHOD = 'mean'  # Can be 'min', 'max', or 'mean'
+#FUSION_METHOD = 'mean'  # Can be 'min', 'max', or 'mean'
 
 # Define the input and output directories
 input_dir_1 = r"D:\Papers\Self\Curtin\Medical Group\Paer -1 (ONE to Multi)\D1"  # Update with your image folder path
@@ -486,10 +470,4 @@ for i in range(len(image_files_1)):
     cv2.imwrite(os.path.join(output_dir, output_filename), fusedImage, [int(cv2.IMWRITE_PNG_COMPRESSION), 0])  # Save as PNG with no compression
 
 print("Processing complete!")
-
-
-# In[ ]:
-
-
-
 
